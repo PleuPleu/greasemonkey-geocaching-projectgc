@@ -8,6 +8,8 @@
 // jshint multistr:true
 
 // ==UserScript==
+// @author	Ground Zero Communications AB
+// @license     The MIT License (MIT)
 // @name        Geocaching.com + Project-GC
 // @namespace   PGC
 // @description Adds links and data to Geocaching.com to make it collaborate with PGC
@@ -15,9 +17,9 @@
 // @include     http://www.geocaching.com/*
 // @include     https://www.geocaching.com/*
 // @exclude     https://www.geocaching.com/profile/profilecontent.html
-// @version     2.3.7
+// @version     2.3.12
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
-// @require     https://greasyfork.org/scripts/5392-waitforkeyelements/code/WaitForKeyElements.js
+// @require	https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @require     https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant       GM_xmlhttpRequest
 // @grant       GM_setValue
@@ -34,9 +36,20 @@
 // @connect     *
 // @updateURL       https://github.com/magma1447/greasemonkey-geocaching-projectgc/raw/master/greasemonkey-geocaching-projectgc.user.js
 // @downloadURL     https://github.com/magma1447/greasemonkey-geocaching-projectgc/raw/master/greasemonkey-geocaching-projectgc.user.js
-// @license     The MIT License (MIT)
 // ==/UserScript==
 
+
+/*
+MIT License
+
+Copyright (c) 2014 Ground Zero Communications AB
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice (including the next paragraph) shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
 
 (function() {
 
@@ -710,8 +723,16 @@
                             if(typeof(geocacheLogsPerCountry['willAttend']) != 'undefined' && geocacheLogsPerCountry['willAttend'].length > 0) {
                                 html += '<p style="margin-left: 10px; margin-bottom: 0;"><strong>Will attend logs per country</strong> <small>according to Project-GC.com</small></p>';
                                 html += '<ul style="list-style: none; margin-left: 0; margin-bottom: 0;">';
+                                var unknowns = null;
                                 for (var i = 0; i < geocacheLogsPerCountry['willAttend'].length; i++) {
+                                    if(geocacheLogsPerCountry['willAttend'][i].flagIcon.endsWith('blank.gif')) {
+                                        unknowns = geocacheLogsPerCountry['willAttend'][i].cnt;
+                                        continue;
+                                    }
                                     html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="' + cdnDomain + geocacheLogsPerCountry['willAttend'][i].flagIcon + '" alt="' + $('<div/>').text(geocacheLogsPerCountry['willAttend'][i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry['willAttend'][i].country).html() + '"> ' + geocacheLogsPerCountry['willAttend'][i].cnt + '</span></li>';
+                                }
+                                if(unknowns !== null) {
+                                    html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;">(plus ' + unknowns + ' undetermined)</span></li>';
                                 }
                                 html += '</ul>';
                                 html += '<span style="display: block; text-align: right; padding-right: 10px;"><small>' + geocacheLogsPerCountry['willAttend'].length + ' unique countries</small></span>';
@@ -721,8 +742,16 @@
                             if(typeof(geocacheLogsPerCountry['found']) != 'undefined' && geocacheLogsPerCountry['found'].length > 0) {
                                 html += '<p style="margin-left: 10px; margin-bottom: 0;"><strong>Found logs per country</strong> <small>according to Project-GC.com</small></p>';
                                 html += '<ul style="list-style: none; margin-left: 0; margin-bottom: 0;">';
+                                var unknowns = null;
                                 for (var i = 0; i < geocacheLogsPerCountry['found'].length; i++) {
+                                    if(geocacheLogsPerCountry['found'][i].flagIcon.endsWith('blank.gif')) {
+                                        unknowns = geocacheLogsPerCountry['found'][i].cnt;
+                                        continue;
+                                    }
                                     html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;"><img src="' + cdnDomain + geocacheLogsPerCountry['found'][i].flagIcon + '" alt="' + $('<div/>').text(geocacheLogsPerCountry['found'][i].country).html() + '" title="' + $('<div/>').text(geocacheLogsPerCountry['found'][i].country).html() + '"> ' + geocacheLogsPerCountry['found'][i].cnt + '</span></li>';
+                                }
+                                if(unknowns !== null) {
+                                    html += '<li style="display: inline; padding-right: 20px;"><span style="display: inline-block;">(plus ' + unknowns + ' undetermined)</span></li>';
                                 }
                                 html += '</ul>';
                                 html += '<span style="display: block; text-align: right; padding-right: 10px;"><small>' + geocacheLogsPerCountry['found'].length + ' unique countries</small></span>';
@@ -784,6 +813,7 @@
             html('<div style="margin-right: 15px; margin-bottom: 10px;"><p id="ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode" style="font-size: 125%; margin-bottom: 0">' + gccode + '</p>' +
                 '<input size="25" type="text" value="https://coord.info/' + encodeURIComponent(gccode) + '" onclick="this.setSelectionRange(0, this.value.length);"></div>');
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel').css('font-weight', 'inherit').css('margin-right', '27px');
+            $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel div input').css('padding', '0');
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel div').css('margin', '0 0 5px 0');
             $('#ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoLinkPanel div p').css('font-weight', 'bold');
         }
@@ -1271,6 +1301,18 @@
 
 
 // https://github.com/exif-js/exif-js adjusted to use GM.xmlHttpRequest
+// Original license:
+/*
+The MIT License (MIT)
+
+Copyright (c) 2008 Jacob Seidelin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
 (function() {
     var debug = false;
 
@@ -2096,3 +2138,4 @@
     }
 }.call(this));
 // -- https://github.com/exif-js/exif-js
+
