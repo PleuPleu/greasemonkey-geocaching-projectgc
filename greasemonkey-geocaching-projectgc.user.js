@@ -2,7 +2,7 @@
 /* global waitForKeyElements: true */
 /* global GM: true */
 /* global unsafeWindow: true */
-/* globals i18next, i18nextXHRBackend, i18nextBrowserLanguageDetector */
+/* globals i18next, i18nextHttpBackend, i18nextBrowserLanguageDetector */
 // jshint newcap:false
 // jshint multistr:true
 // jshint esversion:8
@@ -22,9 +22,9 @@
 // @require         https://code.jquery.com/jquery-4.0.0.slim.min.js
 // @require         https://update.greasyfork.org/scripts/383527/701631/Wait_for_key_elements.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
-// @require         https://unpkg.com/i18next@21.9.1/i18next.min.js
-// @require         https://unpkg.com/i18next-xhr-backend@3.2.2/i18nextXHRBackend.js
-// @require         https://unpkg.com/i18next-browser-languagedetector@6.1.4/i18nextBrowserLanguageDetector.js
+// @require         https://unpkg.com/i18next@26.3.6/i18next.min.js
+// @require         https://unpkg.com/i18next-http-backend@4.0.1/i18nextHttpBackend.min.js
+// @require         https://unpkg.com/i18next-browser-languagedetector@8.2.1/i18nextBrowserLanguageDetector.min.js
 // @grant           GM.xmlHttpRequest
 // @grant           GM.setValue
 // @grant           GM.getValue
@@ -1289,7 +1289,7 @@
     function loadTranslations() {
         return new Promise((resolve) => {
             i18next
-                .use(i18nextXHRBackend)
+                .use(i18nextHttpBackend)
                 .use(i18nextBrowserLanguageDetector)
                 .init({
                     supportedLngs: [
