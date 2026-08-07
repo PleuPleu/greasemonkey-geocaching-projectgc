@@ -19,7 +19,7 @@
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
 // @exclude         https://www.geocaching.com/help/*
 // @version         3.0.6
-// @require         https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
+// @require         https://code.jquery.com/jquery-4.0.0.slim.min.js
 // @require         https://update.greasyfork.org/scripts/383527/701631/Wait_for_key_elements.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @require         https://unpkg.com/i18next@21.9.1/i18next.min.js
@@ -397,7 +397,7 @@
         if (isSettingEnabled('showVGPS')) {
 
             setTimeout(function() {
-                $('#map_canvas div.leaflet-popup-pane').bind('DOMSubtreeModified', function(event) {
+                $('#map_canvas div.leaflet-popup-pane').on('DOMSubtreeModified', function(event) {
                     if (event.target.className === 'leaflet-popup-pane' && $('#pgc_vgps').length === 0) {
                         const gccode = $('#gmCacheInfo div.code').first().text();
 
