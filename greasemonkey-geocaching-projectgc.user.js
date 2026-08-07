@@ -397,8 +397,13 @@
         if (isSettingEnabled('showVGPS')) {
 
             setTimeout(function() {
-                $('#map_canvas div.leaflet-popup-pane').on('DOMSubtreeModified', function(event) {
-                    if (event.target.className === 'leaflet-popup-pane' && $('#pgc_vgps').length === 0) {
+                const popupPane = $('#map_canvas div.leaflet-popup-pane')[0];
+                if (!popupPane) {
+                    return;
+                }
+
+                const vgpsObserver = new MutationObserver(function() {
+                    if ($('#pgc_vgps').length === 0) {
                         const gccode = $('#gmCacheInfo div.code').first().text();
 
                         $('#gmCacheInfo div.links').after('<div id="pgc_vgps"></div>');
@@ -468,6 +473,8 @@
                         });
                     }
                 });
+
+                vgpsObserver.observe(popupPane, { childList: true, subtree: true });
             }, 500);
         }
 
@@ -1032,9 +1039,13 @@
         // Change font in personal cache note to monospaced
         if (isSettingEnabled('geocacheNoteFont')) {
             $("#viewCacheNote,#cacheNoteText").css("font-family", "monospace").css("font-size", "12px");
-            $("#viewCacheNote").on("DOMSubtreeModified", function() {
-                $(".inplace_field").css("font-family", "monospace").css("font-size", "12px");
-            });
+            const viewCacheNoteEl = document.getElementById('viewCacheNote');
+            if (viewCacheNoteEl) {
+                const noteFontObserver = new MutationObserver(function() {
+                    $(".inplace_field").css("font-family", "monospace").css("font-size", "12px");
+                });
+                noteFontObserver.observe(viewCacheNoteEl, { childList: true, subtree: true });
+            }
         }
 
 
