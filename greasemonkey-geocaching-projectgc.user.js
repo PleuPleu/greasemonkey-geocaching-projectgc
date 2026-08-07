@@ -1303,7 +1303,6 @@
                         'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR'
                     ],
                     fallbackLng: [ 'en_US' ],
-                    'lng': navigator.language,
                     ns: ['userscript'],
                     defaultNS: ['userscript'],
                     backend: {
