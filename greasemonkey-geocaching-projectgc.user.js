@@ -1300,6 +1300,10 @@
                     fallbackLng: [ 'en_US' ],
                     ns: ['userscript'],
                     defaultNS: ['userscript'],
+                    detection: {
+                        // Browsers report BCP-47 ('sv-SE'), Project-GC uses 'sv_SE'.
+                        convertDetectedLanguage: (lng) => lng.replace('-', '_')
+                    },
                     backend: {
                         loadPath: pgcUrl + '/locale/{{ns}}.php?lng={{lng}}',
                         crossDomain: true
