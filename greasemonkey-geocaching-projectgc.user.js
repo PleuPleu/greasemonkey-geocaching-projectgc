@@ -18,7 +18,7 @@
 // @match           https://www.geocaching.com/*
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
 // @exclude         https://www.geocaching.com/help/*
-// @version         3.0.6
+// @version         3.0.7
 // @require         https://code.jquery.com/jquery-4.0.0.slim.min.js
 // @require         https://update.greasyfork.org/scripts/383527/701631/Wait_for_key_elements.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
