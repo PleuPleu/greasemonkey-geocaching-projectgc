@@ -16,7 +16,6 @@
 // @icon            https://project-gc.com/favicon-32x32.png
 // @match           http://www.geocaching.com/*
 // @match           https://www.geocaching.com/*
-// @exclude         https://www.geocaching.com/profile/profilecontent.html
 // @exclude         https://www.geocaching.com/help/*
 // @version         3.0.7
 // @require         https://code.jquery.com/jquery-4.0.0.slim.min.js
