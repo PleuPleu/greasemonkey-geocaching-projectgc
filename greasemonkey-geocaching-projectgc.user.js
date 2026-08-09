@@ -1297,11 +1297,6 @@
                         'fr_FR', 'hu_HU', 'it_IT', 'ko_KR', 'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT',
                         'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR'
                     ],
-                    whitelist: [
-                        'ca_ES', 'cs_CZ', 'da_DK', 'de_DE', 'en_AU', 'en_CA', 'en_GB', 'en_US', 'es_ES', 'fi_FI',
-                        'fr_FR', 'hu_HU', 'it_IT', 'ko_KR', 'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT',
-                        'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR'
-                    ],
                     fallbackLng: [ 'en_US' ],
                     ns: ['userscript'],
                     defaultNS: ['userscript'],
