@@ -404,9 +404,17 @@
 
                 const vgpsObserver = new MutationObserver(function() {
                     if ($('#pgc_vgps').length === 0) {
+                        // The observer also fires while the popup is still being
+                        // built. Wait for the insertion point, so that no request
+                        // goes out before there is somewhere to render the answer.
+                        const links = $('#gmCacheInfo div.links');
+                        if (links.length === 0) {
+                            return;
+                        }
+
                         const gccode = $('#gmCacheInfo div.code').first().text();
 
-                        $('#gmCacheInfo div.links').after('<div id="pgc_vgps"></div>');
+                        links.after('<div id="pgc_vgps"></div>');
 
                         GM.xmlHttpRequest({
                             method: "GET",
