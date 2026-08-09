@@ -2,7 +2,7 @@
 /* global waitForKeyElements: true */
 /* global GM: true */
 /* global unsafeWindow: true */
-/* globals i18next, i18nextXHRBackend, i18nextBrowserLanguageDetector */
+/* globals i18next, i18nextHttpBackend, i18nextBrowserLanguageDetector */
 // jshint newcap:false
 // jshint multistr:true
 // jshint esversion:8
@@ -19,12 +19,12 @@
 // @exclude         https://www.geocaching.com/profile/profilecontent.html
 // @exclude         https://www.geocaching.com/help/*
 // @version         3.0.6
-// @require         https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
+// @require         https://code.jquery.com/jquery-4.0.0.slim.min.js
 // @require         https://update.greasyfork.org/scripts/383527/701631/Wait_for_key_elements.js
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
-// @require         https://unpkg.com/i18next@21.9.1/i18next.min.js
-// @require         https://unpkg.com/i18next-xhr-backend@3.2.2/i18nextXHRBackend.js
-// @require         https://unpkg.com/i18next-browser-languagedetector@6.1.4/i18nextBrowserLanguageDetector.js
+// @require         https://unpkg.com/i18next@26.3.6/i18next.min.js
+// @require         https://unpkg.com/i18next-http-backend@4.0.1/i18nextHttpBackend.min.js
+// @require         https://unpkg.com/i18next-browser-languagedetector@8.2.1/i18nextBrowserLanguageDetector.min.js
 // @grant           GM.xmlHttpRequest
 // @grant           GM.setValue
 // @grant           GM.getValue
@@ -397,8 +397,13 @@
         if (isSettingEnabled('showVGPS')) {
 
             setTimeout(function() {
-                $('#map_canvas div.leaflet-popup-pane').bind('DOMSubtreeModified', function(event) {
-                    if (event.target.className === 'leaflet-popup-pane' && $('#pgc_vgps').length === 0) {
+                const popupPane = $('#map_canvas div.leaflet-popup-pane')[0];
+                if (!popupPane) {
+                    return;
+                }
+
+                const vgpsObserver = new MutationObserver(function() {
+                    if ($('#pgc_vgps').length === 0) {
                         const gccode = $('#gmCacheInfo div.code').first().text();
 
                         $('#gmCacheInfo div.links').after('<div id="pgc_vgps"></div>');
@@ -468,6 +473,8 @@
                         });
                     }
                 });
+
+                vgpsObserver.observe(popupPane, { childList: true, subtree: true });
             }, 500);
         }
 
@@ -1032,9 +1039,13 @@
         // Change font in personal cache note to monospaced
         if (isSettingEnabled('geocacheNoteFont')) {
             $("#viewCacheNote,#cacheNoteText").css("font-family", "monospace").css("font-size", "12px");
-            $("#viewCacheNote").on("DOMSubtreeModified", function() {
-                $(".inplace_field").css("font-family", "monospace").css("font-size", "12px");
-            });
+            const viewCacheNoteEl = document.getElementById('viewCacheNote');
+            if (viewCacheNoteEl) {
+                const noteFontObserver = new MutationObserver(function() {
+                    $(".inplace_field").css("font-family", "monospace").css("font-size", "12px");
+                });
+                noteFontObserver.observe(viewCacheNoteEl, { childList: true, subtree: true });
+            }
         }
 
 
@@ -1278,7 +1289,7 @@
     function loadTranslations() {
         return new Promise((resolve) => {
             i18next
-                .use(i18nextXHRBackend)
+                .use(i18nextHttpBackend)
                 .use(i18nextBrowserLanguageDetector)
                 .init({
                     supportedLngs: [
@@ -1292,7 +1303,6 @@
                         'sk_SK', 'sl_SI', 'sv_SE', 'tr_TR'
                     ],
                     fallbackLng: [ 'en_US' ],
-                    'lng': navigator.language,
                     ns: ['userscript'],
                     defaultNS: ['userscript'],
                     backend: {
